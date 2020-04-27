@@ -1,7 +1,6 @@
-
-require 'nokogiri'
 require 'open-uri'
-
+require 'nokogiri'
+require 'json'
 class Scraper
   attr_accessor :data
 
@@ -12,10 +11,10 @@ class Scraper
   end
 
   def json_data
-    @data.map { |link| {}.merge("title"=>"#{link['title']}", "link" => "https://stackoverflow.com#{link['href']}") }
+    json = JSON.pretty_generate(@data.map { |link| {}.merge("title"=>"#{link['title']}", "link" => "https://stackoverflow.com#{link['href']}") })
+    File.open("doc/sample.json","w").write(json)
   end
 end
 
 jobs = Scraper.new
-
-puts jobs.json_data
+jobs.json_data
