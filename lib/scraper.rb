@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open-uri'
 require 'nokogiri'
 require 'json'
@@ -11,8 +13,8 @@ class Scraper
   end
 
   def json_data
-    json = JSON.pretty_generate(@data.map { |link| {}.merge("title"=>"#{link['title']}", "link" => "https://stackoverflow.com#{link['href']}") })
-    File.open("doc/sample.json","w").write(json)
+    json = JSON.pretty_generate(@data.map { |link| {}.merge('title' => (link['title']).to_s, 'link' => "https://stackoverflow.com#{link['href']}") })
+    File.open('doc/sample.json', 'w').write(json)
   end
 end
 
