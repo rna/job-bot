@@ -13,11 +13,16 @@ class Scraper
                concat( " ", "stretched-link", " " ))]')
   end
 
-  def json_data
-    json = JSON.pretty_generate(@data.map { |link| {}.merge('title' => (link['title']).to_s, 'link' => "https://stackoverflow.com#{link['href']}") })
+  def extract_data
+    # @data.map { |link| {}.merge('title' => (link['title']).to_s, 'link' => "https://stackoverflow.com#{link['href']}") }
+    @data.map { |link| "https://stackoverflow.com#{link['href']}" }
+  end
+
+  def json_file
+    json = JSON.pretty_generate(convert_data)
     File.open("doc/#{@tech}-remote.json", 'w').write(json)
   end
 end
 
-# jobs = Scraper.new("ruby on rails")
-# jobs.json_data
+# jobs = Scraper.new("rails")
+# puts jobs.convert_data
