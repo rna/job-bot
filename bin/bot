@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'telegram/bot'
+require 'dotenv/load'
+
+require './lib/scraper'
+
+token = ENV['TOKEN']
+
+Telegram::Bot::Client.run(token) do |bot|
+  bot.listen do |message|
+    case message.text
+    when '/start'
+      bot.api.send_message(chat_id: message.chat.id, text: "Hello #{message.from.first_name}, Welcome to Personal Remote Job Board")
+      bot.api.send_message(chat_id: message.chat.id, text: 'Please tel me in which technology you are looking for job')
+    else
+      jobs = Scraper.new(message.text)
+      jobArray = jobs.extract_data
+      bot.api.send_message(chat_id: message.chat.id, text: "Here it is the list #{message.from.first_name}")
+      jobArray.each {|item| bot.api.send_message(chat_id: message.chat.id, text: "#{item}") }
+      # bot.api.send_document(chat_id:message.chat.id, document:File.new("ruby-remote.json"))
+    end
+  end
+end
