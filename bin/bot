@@ -13,6 +13,13 @@ Telegram::Bot::Client.run(token) do |bot|
     when '/start'
       bot.api.send_message(chat_id: message.chat.id, text: "Hello #{message.from.first_name}, Welcome to Personal Remote Job Board")
       bot.api.send_message(chat_id: message.chat.id, text: 'Please tel me in which technology you are looking for job')
+      kb = [
+        Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Go to Website', url: 'https://google.com'),
+        Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Contact me', callback_data: 'touch'),
+        Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Switch to inline', switch_inline_query: 'some text')
+      ]
+      markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
+      bot.api.send_message(chat_id: message.chat.id, text: 'Make a choice', reply_markup: markup)
     else
       jobs = Scraper.new(message.text)
       jobArray = jobs.extract_data

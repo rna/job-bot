@@ -7,7 +7,7 @@ class Scraper
   attr_accessor :data
 
   def initialize(tech)
-    @tech = tech.downcase
+    @tech = tech
     doc = Nokogiri::XML(URI.open("https://stackoverflow.com/jobs?q=#{@tech}&r=true"))
     @data = doc.xpath('//*[contains(concat( " ", @class, " " ),
                concat( " ", "stretched-link", " " ))]')
