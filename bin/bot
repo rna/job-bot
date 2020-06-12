@@ -9,9 +9,10 @@ token = ENV['TOKEN']
 
 Telegram::Bot::Client.run(token) do |bot|
   bot.listen do |message|
+    greetings = ["Hola", "Bonjour", "Namaste", "Hello"].sample
     case message.text
     when '/start'
-      bot.api.send_message(chat_id: message.chat.id, text: "Hello #{message.from.first_name}, Welcome to Personal Remote Job Board")
+      bot.api.send_message(chat_id: message.chat.id, text: "#{greetings} #{message.from.first_name}, Welcome to Personal Remote Job Board")
       bot.api.send_message(chat_id: message.chat.id, text: 'Please tel me in which technology you are looking for job')
       kb = [
         Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Go to Website', url: 'https://google.com'),
