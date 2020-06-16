@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+require File.expand_path('../../config/environment', __dir__)
 
 require 'open-uri'
 require 'nokogiri'
@@ -14,16 +14,27 @@ class Scraper
   end
 
   def extract_data
-    extracted_data = @data.map { |link| {}.merge(
-      'title' => (link['title']).to_s,
-      'source_id' => link['href'].match(/\d+/),
-      'technology' => @tech,
-      'source' => 'StackOverFlow',
-      'link' => "https://stackoverflow.com#{link['href']}") }
+    extracted_data = @data.map do |link|
+      {}.merge(
+        'title' => (link['title']).to_s,
+        'source_id' => link['href'].match(/\d+/),
+        'technology' => @tech,
+        'source' => 'StackOverFlow',
+        'link' => "https://stackoverflow.com#{link['href']}"
+      )
+    end
 
-    JSON.pretty_generate(extracted_data)
+    json_object = JSON.parse(JSON.pretty_generate(extracted_data))
 
-    # @data.map { |link| "https://stackoverflow.com#{link['href']}" }
+    json_object.each do |i|
+      Job.create(
+        title: (i['title']).to_s,
+        source_id: (i['source_id']).to_s,
+        technology: (i['technology']).to_s,
+        source: (i['source']).to_s,
+        link: (i['link']).to_s
+      )
+    end
   end
 
   # def json_file
@@ -32,5 +43,5 @@ class Scraper
   # end
 end
 
-jobs = Scraper.new("rails")
+jobs = Scraper.new('rails')
 puts jobs.extract_data
