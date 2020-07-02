@@ -25,7 +25,7 @@ class Scraper
     end
 
     json_object = JSON.parse(JSON.pretty_generate(extracted_data))
-
+    
     json_object.each do |i|
       Job.create(
         title: (i['title']).to_s,
@@ -36,12 +36,7 @@ class Scraper
       )
     end
   end
-
-  # def json_file
-  #   json = JSON.pretty_generate(convert_data)
-  #   File.open("doc/#{@tech}-remote.json", 'w').write(json)
-  # end
 end
 
 jobs = Scraper.new('rails')
-puts jobs.extract_data
+jobs.extract_data

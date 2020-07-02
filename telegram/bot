@@ -17,8 +17,6 @@ Telegram::Bot::Client.run(token) do |bot|
       bot.api.send_message(chat_id: message.chat.id, text: 'Please tel me in which technology you are looking for job')
       bot.api.send_message(chat_id: message.chat.id, text: 'Make a choice', reply_markup: markup)
     else
-      jobs = Scraper.new(message.text)
-      job_array = jobs.extract_data
       bot.api.send_message(chat_id: message.chat.id, text: "Here it is the list #{message.from.first_name}")
       job_array.each { |item| bot.api.send_message(chat_id: message.chat.id, text: item.to_s) }
     end
