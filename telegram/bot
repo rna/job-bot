@@ -15,19 +15,12 @@ Telegram::Bot::Client.run(token) do |bot|
     when '/start'
       bot.api.send_message(chat_id: message.chat.id, text: text)
       bot.api.send_message(chat_id: message.chat.id, text: 'Please tel me in which technology you are looking for job')
-      kb = [
-        Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Go to Website', url: 'https://google.com'),
-        Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Contact me', callback_data: 'touch'),
-        Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Switch to inline', switch_inline_query: 'some text')
-      ]
-      markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
       bot.api.send_message(chat_id: message.chat.id, text: 'Make a choice', reply_markup: markup)
     else
       jobs = Scraper.new(message.text)
       job_array = jobs.extract_data
       bot.api.send_message(chat_id: message.chat.id, text: "Here it is the list #{message.from.first_name}")
       job_array.each { |item| bot.api.send_message(chat_id: message.chat.id, text: item.to_s) }
-      # bot.api.send_document(chat_id:message.chat.id, document:File.new("ruby-remote.json"))
     end
   end
 end
