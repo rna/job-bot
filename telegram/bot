@@ -1,24 +1,26 @@
 #!/usr/bin/env ruby
+
 require File.expand_path('../config/environment', __dir__)
 
 require 'telegram/bot'
-
-require './telegram/lib/scraper'
 
 token = Rails.application.credentials.telegram[:token]
 
 Telegram::Bot::Client.run(token) do |bot|
   bot.listen do |message|
     greetings = %w[Hola Bonjour Namaste Hello].sample
-    text = "#{greetings} #{message.from.first_name}, Welcome to Personal Remote Job Board"
+    greet = "#{greetings} #{message.from.first_name}, Welcome to Personal Remote Job Board"
+    tech_question = 'Please tel me in which technology you are looking for job'
+    answers = Telegram::Bot::Types::ReplyKeyboardMarkup
+      .new(keyboard: %w[/Rails /React /Python /Other], one_time_keyboard: true)
+
     case message.text
     when '/start'
-      bot.api.send_message(chat_id: message.chat.id, text: text)
-      bot.api.send_message(chat_id: message.chat.id, text: 'Please tel me in which technology you are looking for job')
-      bot.api.send_message(chat_id: message.chat.id, text: 'Make a choice', reply_markup: markup)
+      bot.api.send_message(chat_id: message.chat.id, text: greet)
+      bot.api.send_message(chat_id: message.chat.id, text: tech_question, reply_markup: answers)
     else
       bot.api.send_message(chat_id: message.chat.id, text: "Here it is the list #{message.from.first_name}")
-      job_array.each { |item| bot.api.send_message(chat_id: message.chat.id, text: item.to_s) }
+      # Job.all.each { |item| bot.api.send_message(chat_id: message.chat.id, text: item.to_s) }
     end
   end
 end
