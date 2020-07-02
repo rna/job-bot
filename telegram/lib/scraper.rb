@@ -3,6 +3,7 @@ require File.expand_path('../../config/environment', __dir__)
 require 'open-uri'
 require 'nokogiri'
 require 'json'
+require 'date'
 class Scraper
   attr_accessor :data
 
@@ -25,7 +26,8 @@ class Scraper
     end
 
     json_object = JSON.parse(JSON.pretty_generate(extracted_data))
-    
+    puts "Job Data updated #{DateTime.now}"
+
     json_object.each do |i|
       Job.create(
         title: (i['title']).to_s,
@@ -38,5 +40,5 @@ class Scraper
   end
 end
 
-jobs = Scraper.new('rails')
+jobs = Scraper.new('python')
 jobs.extract_data

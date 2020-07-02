@@ -1,4 +1,4 @@
 loop do
-  sleep 120 # 2 min in seconds
+  sleep 300 # 5 min in seconds
   system('ruby telegram/lib/scraper.rb')
 end
