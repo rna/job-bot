@@ -12,15 +12,20 @@ Telegram::Bot::Client.run(token) do |bot|
     greet = "#{greetings} #{message.from.first_name}, Welcome to Personal Remote Job Board"
     tech_question = 'Please tel me in which technology you are looking for job'
     answers = Telegram::Bot::Types::ReplyKeyboardMarkup
-      .new(keyboard: %w[/Rails /React /Python /Other], one_time_keyboard: true)
+      .new(keyboard: %w[Rails Python], one_time_keyboard: true)
 
     case message.text
     when '/start'
       bot.api.send_message(chat_id: message.chat.id, text: greet)
       bot.api.send_message(chat_id: message.chat.id, text: tech_question, reply_markup: answers)
-    else
+    when 'Rails'
       bot.api.send_message(chat_id: message.chat.id, text: "Here it is the list #{message.from.first_name}")
-      # Job.all.each { |item| bot.api.send_message(chat_id: message.chat.id, text: item.to_s) }
+      Job.where(technology: 'rails').map { |item| bot.api.send_message(chat_id: message.chat.id, text: item.link) }
+    when 'Python'
+      bot.api.send_message(chat_id: message.chat.id, text: "Here it is the list #{message.from.first_name}")
+      Job.where(technology: 'python').map { |item| bot.api.send_message(chat_id: message.chat.id, text: item.link) }
+    else
+      bot.api.send_message(chat_id: message.chat.id, text: "Sorry #{message.from.first_name}, Currently we didnt have the jobs, will add soon.") 
     end
   end
 end
