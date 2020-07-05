@@ -24,19 +24,19 @@ Telegram::Bot::Client.run(token) do |bot|
       bot.api.send_message(chat_id: message.chat.id, text: tech_question, reply_markup: tech_answers)
     when 'Rails'
       bot.api.send_message(chat_id: message.chat.id, text: sub_question, reply_markup: sub_answers)
-      case message.text
-      when 'One-time'
+    when Telegram::Bot::Types::CallbackQuery
+      if message.data == 'One-time'
         bot.api.send_message(chat_id: message.chat.id, text: "Here it is the list #{message.from.first_name}")
-        Job.where(technology: 'rails').map { |item| bot.api.send_message(chat_id: message.chat.id, text: item.link) }
-      when 'Recurring'
+        Job.where(technology: 'rails').order("updated_at DESC").limit(10)
+        .map { |item| bot.api.send_message(chat_id: message.chat.id, text: item.link) }
+      elsif message.data == 'Recurring'
         #Here goes a method to include user to DB
         bot.api.send_message(chat_id: message.chat.id, text: "Here it is the list #{message.from.first_name}")
-        Job.where(technology: 'rails').map { |item| bot.api.send_message(chat_id: message.chat.id, text: item.link) }
+        Job.where(technology: 'rails').order("updated_at DESC").limit(10)
+        .map { |item| bot.api.send_message(chat_id: message.chat.id, text: item.link) }
       else
-        bot.api.send_message(chat_id: message.chat.id, text: "Sorry #{message.from.first_name}, You need to choose an option") 
+        bot.api.send_message(chat_id: message.chat.id, text: "You need to choose an option") 
       end
-      bot.api.send_message(chat_id: message.chat.id, text: "Here it is the list #{message.from.first_name}")
-      Job.where(technology: 'rails').map { |item| bot.api.send_message(chat_id: message.chat.id, text: item.link) }
     when 'Python'
       bot.api.send_message(chat_id: message.chat.id, text: "Here it is the list #{message.from.first_name}")
       Job.where(technology: 'python').map { |item| bot.api.send_message(chat_id: message.chat.id, text: item.link) }
